@@ -17,6 +17,7 @@ export function createDatabaseOptions(env: DatabaseEnv): DataSourceOptions {
     synchronize: false,
     migrationsRun: false,
     installExtensions: false,
+    uuidExtension: 'pgcrypto',
     logging: false,
     connectTimeoutMS: 5000,
   };
