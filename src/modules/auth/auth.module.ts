@@ -5,9 +5,12 @@ import { JwtModule, type JwtModuleOptions } from '@nestjs/jwt';
 import type { AppEnv } from '../../config/env.schema.js';
 import { PasswordService } from './password.service.js';
 import { TokenService } from './token.service.js';
+import { UsersModule } from '../users/users.module.js';
+import { AuthService } from './auth.service.js';
 
 @Module({
   imports: [
+    UsersModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -45,6 +48,6 @@ import { TokenService } from './token.service.js';
       },
     }),
   ],
-  providers: [PasswordService, TokenService],
+  providers: [PasswordService, TokenService, AuthService],
 })
 export class AuthModule {}

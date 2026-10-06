@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { type EntityManager, Repository } from 'typeorm';
 import { User } from './entities/user.entity.js';
 import type { CreateUserData } from './types/users.types.js';
 import { throwUserCreationError } from './errors/user-creation.error.js';
@@ -41,8 +41,13 @@ export class UsersService {
       .getOne();
   }
 
-  async create(data: CreateUserData): Promise<User> {
-    const user = this.usersRepository.create({
+  async create(
+    data: CreateUserData,
+    manager: EntityManager = this.usersRepository.manager,
+  ): Promise<User> {
+    const usersRepository = manager.getRepository(User);
+
+    const user = usersRepository.create({
       email: this.normalizeEmail(data.email),
       passwordHash: data.passwordHash,
       firstName: data.firstName,
@@ -52,7 +57,7 @@ export class UsersService {
     });
 
     try {
-      return await this.usersRepository.save(user);
+      return await usersRepository.save(user);
     } catch (error) {
       return throwUserCreationError(error, this.logger);
     }
