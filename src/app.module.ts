@@ -6,6 +6,7 @@ import { appEnvSchema } from './config/env.schema.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createDatabaseOptions } from './database/database-options.js';
 import { UsersModule } from './modules/users/users.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UsersModule } from './modules/users/users.module.js';
         }),
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
