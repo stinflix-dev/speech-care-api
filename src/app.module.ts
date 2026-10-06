@@ -5,6 +5,7 @@ import { AppService } from './app.service.js';
 import { appEnvSchema } from './config/env.schema.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { createDatabaseOptions } from './database/database-options.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { createDatabaseOptions } from './database/database-options.js';
           DB_PASSWORD: config.getOrThrow<string>('DB_PASSWORD'),
         }),
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
