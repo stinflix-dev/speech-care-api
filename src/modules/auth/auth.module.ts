@@ -7,10 +7,15 @@ import { PasswordService } from './password.service.js';
 import { TokenService } from './token.service.js';
 import { UsersModule } from '../users/users.module.js';
 import { AuthService } from './auth.service.js';
+import { APP_GUARD } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthSession } from './entities/auth-session.entity.js';
+import { AccessTokenGuard } from './guards/access-token.guard.js';
 
 @Module({
   imports: [
     UsersModule,
+    TypeOrmModule.forFeature([AuthSession]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -48,6 +53,14 @@ import { AuthService } from './auth.service.js';
       },
     }),
   ],
-  providers: [PasswordService, TokenService, AuthService],
+  providers: [
+    PasswordService,
+    TokenService,
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AuthModule {}
