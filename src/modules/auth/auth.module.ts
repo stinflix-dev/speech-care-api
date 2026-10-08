@@ -11,6 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthSession } from './entities/auth-session.entity.js';
 import { AccessTokenGuard } from './guards/access-token.guard.js';
+import { AuthController } from './auth.controller.js';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { AccessTokenGuard } from './guards/access-token.guard.js';
       },
     }),
   ],
+  controllers: [AuthController],
   providers: [
     PasswordService,
     TokenService,
