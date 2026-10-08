@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { Serialize } from '../../common/decorators/serialize.decorator.js';
 import { AuthService } from './auth.service.js';
@@ -13,12 +14,15 @@ import { AuthResponseDto } from './dtos/auth-response.dto.js';
 import { LoginDto } from './dtos/login.dto.js';
 import { RefreshTokenDto } from './dtos/refresh-token.dto.js';
 import { RegisterDto } from './dtos/register.dto.js';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @Throttle({ default: { limit: 5 } })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @Header('Cache-Control', 'no-store')
@@ -28,6 +32,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 10 } })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Header('Cache-Control', 'no-store')
