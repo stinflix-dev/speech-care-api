@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { createDatabaseOptions } from './database/database-options.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { ChildrenModule } from './modules/children/children.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
     }),
     UsersModule,
     AuthModule,
+    ChildrenModule,
   ],
   controllers: [AppController],
   providers: [AppService],
