@@ -7,6 +7,7 @@ import { Serialize } from '../../common/decorators/serialize.decorator.js';
 import { ChildResponseDto } from './dtos/child-response.dto.js';
 import { ListChildrenQueryDto } from './dtos/list-children-query.dto.js';
 import { PaginationListResponseDto } from '../../common/dtos/paginated-list-response.dto.js';
+import { ThrottleByUser } from '../../common/decorators/throttle-by-user.decorator.js';
 
 @Controller('children')
 export class ChildrenController {
@@ -24,6 +25,7 @@ export class ChildrenController {
 
   @Get()
   @Serialize(PaginationListResponseDto(ChildResponseDto))
+  @ThrottleByUser()
   @Header('Cache-Control', 'no-store')
   findAll(
     @Query() query: ListChildrenQueryDto,
