@@ -6,6 +6,7 @@ import {
   Max,
   MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class ListQueryDto {
@@ -23,6 +24,7 @@ export class ListQueryDto {
 
   @IsOptional()
   @IsString()
+  @MinLength(2)
   @MaxLength(100)
   search?: string;
 }

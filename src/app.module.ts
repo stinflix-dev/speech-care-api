@@ -8,6 +8,7 @@ import { createDatabaseOptions } from './database/database-options.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ChildrenModule } from './modules/children/children.module.js';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -25,6 +26,29 @@ import { ChildrenModule } from './modules/children/children.module.js';
           DB_USER: config.getOrThrow<string>('DB_USER'),
           DB_PASSWORD: config.getOrThrow<string>('DB_PASSWORD'),
         }),
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'default',
+          ttl: 60_000,
+          limit: 30,
+          blockDuration: 60_000,
+        },
+        {
+          name: 'short',
+          ttl: 1_000,
+          limit: 10,
+          blockDuration: 5_000,
+        },
+        {
+          name: 'long',
+          ttl: 60_000,
+          limit: 120,
+          blockDuration: 30_000,
+        },
+      ],
+      errorMessage: 'Забагато запитів. Спробуйте пізніше.',
     }),
     UsersModule,
     AuthModule,

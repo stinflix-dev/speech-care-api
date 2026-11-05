@@ -1,4 +1,9 @@
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import {
+  SkipThrottle,
+  Throttle,
+  type ThrottlerGetTrackerFunction,
+  ThrottlerGuard,
+} from '@nestjs/throttler';
 import {
   applyDecorators,
   InternalServerErrorException,
@@ -7,25 +12,24 @@ import {
 import type { AuthRequest } from '../../modules/auth/types/auth.types.js';
 
 export function ThrottleByUser() {
+  const getTracker: ThrottlerGetTrackerFunction = (_req, context) => {
+    const { user } = context.switchToHttp().getRequest<AuthRequest>();
+
+    if (!user) {
+      throw new InternalServerErrorException(
+        'Не вдалося визначити поточного користувача.',
+      );
+    }
+
+    return `user:${user.userId}`;
+  };
+
   return applyDecorators(
     UseGuards(ThrottlerGuard),
+    SkipThrottle({ default: true }),
     Throttle({
-      default: {
-        limit: 120,
-        ttl: 60_000,
-        blockDuration: 5_000,
-        getTracker: (_req, context) => {
-          const { user } = context.switchToHttp().getRequest<AuthRequest>();
-
-          if (!user) {
-            throw new InternalServerErrorException(
-              'Не вдалося визначити поточного користувача.',
-            );
-          }
-
-          return user.userId;
-        },
-      },
+      short: { getTracker },
+      long: { getTracker },
     }),
   );
 }

@@ -12,22 +12,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthSession } from './entities/auth-session.entity.js';
 import { AccessTokenGuard } from './guards/access-token.guard.js';
 import { AuthController } from './auth.controller.js';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
   imports: [
     UsersModule,
-    ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          name: 'default',
-          ttl: 60_000,
-          limit: 30,
-          blockDuration: 60_000,
-        },
-      ],
-      errorMessage: 'Забагато запитів. Спробуйте пізніше.',
-    }),
     TypeOrmModule.forFeature([AuthSession]),
     JwtModule.registerAsync({
       imports: [ConfigModule],

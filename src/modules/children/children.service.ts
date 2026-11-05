@@ -49,7 +49,7 @@ export class ChildrenService {
     const { page, limit, sortBy, sortOrder, speechDifficulties, search } =
       query;
 
-    const searchValue = search?.trim();
+    const searchPattern = search && `${search.replace(/[\\%_]/g, '\\$&')}%`;
 
     const baseWhere: FindOptionsWhere<Child> = {
       user: { id: userId },
@@ -59,10 +59,10 @@ export class ChildrenService {
     };
 
     const where: FindOptionsWhere<Child> | FindOptionsWhere<Child>[] =
-      searchValue
+      searchPattern
         ? ['firstName', 'lastName'].map((field) => ({
             ...baseWhere,
-            [field]: ILike(`${searchValue}%`),
+            [field]: ILike(searchPattern),
           }))
         : baseWhere;
 

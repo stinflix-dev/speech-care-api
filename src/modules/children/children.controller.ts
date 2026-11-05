@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CreateChildDto } from './dtos/create-child.dto.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import type { AuthContext } from '../auth/types/auth.types.js';
@@ -15,7 +15,6 @@ export class ChildrenController {
 
   @Post()
   @Serialize(ChildResponseDto)
-  @Header('Cache-Control', 'no-store')
   create(
     @Body() body: CreateChildDto,
     @CurrentUser() currentUser: AuthContext,
@@ -26,7 +25,6 @@ export class ChildrenController {
   @Get()
   @Serialize(PaginationListResponseDto(ChildResponseDto))
   @ThrottleByUser()
-  @Header('Cache-Control', 'no-store')
   findAll(
     @Query() query: ListChildrenQueryDto,
     @CurrentUser() currentUser: AuthContext,

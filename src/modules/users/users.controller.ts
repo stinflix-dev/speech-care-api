@@ -1,4 +1,4 @@
-import { Controller, Get, Header, NotFoundException } from '@nestjs/common';
+import { Controller, Get, NotFoundException } from '@nestjs/common';
 import { Serialize } from '../../common/decorators/serialize.decorator.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import type { AuthContext } from '../auth/types/auth.types.js';
@@ -12,7 +12,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  @Header('Cache-Control', 'no-store')
   async me(@CurrentUser() currentUser: AuthContext): Promise<UserResponseDto> {
     const user = await this.usersService.findById(currentUser.userId);
 
@@ -24,13 +23,11 @@ export class UsersController {
   }
 
   @Get()
-  @Header('Cache-Control', 'no-store')
   findAll(): Promise<UserResponseDto[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  @Header('Cache-Control', 'no-store')
   async findById(@UuidParam('id') id: string): Promise<UserResponseDto> {
     const user = await this.usersService.findById(id);
 
