@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   ArrayOverlap,
   type FindOptionsWhere,
@@ -82,5 +86,18 @@ export class ChildrenService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async getByIdForUser(id: string, userId: string) {
+    const child = await this.childRepository.findOneBy({
+      id,
+      user: { id: userId },
+    });
+
+    if (!child) {
+      throw new NotFoundException('Дитину не знайдено');
+    }
+
+    return child;
   }
 }

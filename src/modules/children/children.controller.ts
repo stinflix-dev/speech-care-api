@@ -8,6 +8,7 @@ import { ChildResponseDto } from './dtos/child-response.dto.js';
 import { ListChildrenQueryDto } from './dtos/list-children-query.dto.js';
 import { PaginationListResponseDto } from '../../common/dtos/paginated-list-response.dto.js';
 import { ThrottleByUser } from '../../common/decorators/throttle-by-user.decorator.js';
+import { UuidParam } from '../../common/decorators/uuid-param.decorator.js';
 
 @Controller('children')
 export class ChildrenController {
@@ -30,5 +31,14 @@ export class ChildrenController {
     @CurrentUser() currentUser: AuthContext,
   ) {
     return this.childrenService.findAllByUser(currentUser.userId, query);
+  }
+
+  @Get(':id')
+  @Serialize(ChildResponseDto)
+  findById(
+    @UuidParam('id') id: string,
+    @CurrentUser() currentUser: AuthContext,
+  ) {
+    return this.childrenService.getByIdForUser(id, currentUser.userId);
   }
 }
