@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateChildDto } from './dtos/create-child.dto.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import type { AuthContext } from '../auth/types/auth.types.js';
@@ -51,5 +61,14 @@ export class ChildrenController {
     @CurrentUser() currentUser: AuthContext,
   ): Promise<ChildResponseDto> {
     return this.childrenService.updateByIdForUser(id, currentUser.userId, body);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(
+    @UuidParam('id') id: string,
+    @CurrentUser() currentUser: AuthContext,
+  ): Promise<void> {
+    return this.childrenService.deleteByIdForUser(id, currentUser.userId);
   }
 }

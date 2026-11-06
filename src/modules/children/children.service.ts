@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import {
   ArrayOverlap,
+  DeleteResult,
   type FindOptionsWhere,
   ILike,
   type Repository,
@@ -180,5 +181,29 @@ export class ChildrenService {
     }
 
     return child;
+  }
+
+  async deleteByIdForUser(id: string, userId: string): Promise<void> {
+    let result: DeleteResult;
+
+    try {
+      result = await this.childRepository.delete({
+        id,
+        user: { id: userId },
+      });
+    } catch (error) {
+      this.logger.error({
+        operation: 'children.delete',
+        errorType: error instanceof Error ? error.name : 'UnknownThrownValue',
+      });
+
+      throw new InternalServerErrorException(
+        'Не вдалося видалити профіль дитини. Спробуйте пізніше.',
+      );
+    }
+
+    if (result.affected === 0) {
+      throw new NotFoundException('Дитину не знайдено');
+    }
   }
 }
