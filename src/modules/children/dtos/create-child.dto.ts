@@ -59,7 +59,7 @@ export class CreateChildDto {
   })
   speechDifficulties?: string[];
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== undefined)
   @IsArray()
   @ArrayMaxSize(10)
   @ArrayUnique()

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { CreateChildDto } from './dtos/create-child.dto.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import type { AuthContext } from '../auth/types/auth.types.js';
@@ -9,6 +9,7 @@ import { ListChildrenQueryDto } from './dtos/list-children-query.dto.js';
 import { PaginationListResponseDto } from '../../common/dtos/paginated-list-response.dto.js';
 import { ThrottleByUser } from '../../common/decorators/throttle-by-user.decorator.js';
 import { UuidParam } from '../../common/decorators/uuid-param.decorator.js';
+import { UpdateChildDto } from './dtos/update-child.dto.js';
 
 @Controller('children')
 export class ChildrenController {
@@ -40,5 +41,15 @@ export class ChildrenController {
     @CurrentUser() currentUser: AuthContext,
   ) {
     return this.childrenService.getByIdForUser(id, currentUser.userId);
+  }
+
+  @Patch(':id')
+  @Serialize(ChildResponseDto)
+  update(
+    @UuidParam('id') id: string,
+    @Body() body: UpdateChildDto,
+    @CurrentUser() currentUser: AuthContext,
+  ): Promise<ChildResponseDto> {
+    return this.childrenService.updateByIdForUser(id, currentUser.userId, body);
   }
 }
